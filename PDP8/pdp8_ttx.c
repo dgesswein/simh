@@ -92,8 +92,6 @@ void ttx_reset_ln (int32 i);
 t_stat ttx_vlines (UNIT *uptr, int32 val, CONST char *cptr, void *desc);
 t_stat ttx_show_devno (FILE *st, UNIT *uptr, int32 val, CONST void *desc);
 
-
-
 #define TTIX_SET_DONE(ln)       ttx_new_flags (ttix_done | (1u << (ln)), ttox_done, ttx_enbl)
 #define TTIX_CLR_DONE(ln)       ttx_new_flags (ttix_done & ~(1u << (ln)), ttox_done, ttx_enbl)
 #define TTIX_TST_DONE(ln)       ((ttix_done & (1u << (ln))) != 0)
