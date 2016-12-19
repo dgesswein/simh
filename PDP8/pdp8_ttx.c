@@ -223,6 +223,7 @@ MTAB ttox_mod[] = {
     { TT_MODE, TT_MODE_7B, "7b", "7B", NULL },
     { TT_MODE, TT_MODE_8B, "8b", "8B", NULL },
     { TT_MODE, TT_MODE_7P, "7p", "7P", NULL },
+    { MTAB_VDV, 0, "DEVNO", NULL, NULL, &ttx_show_devno, &ttx_desc },
     { MTAB_XTD|MTAB_VUN, 0, NULL, "DISCONNECT",
       &tmxr_dscln, NULL, &ttx_desc },
     { MTAB_XTD|MTAB_VUN|MTAB_NC, 0, "LOG", "LOG",
@@ -523,11 +524,24 @@ return SCPE_OK;
 /* Show device numbers */
 t_stat ttx_show_devno (FILE *st, UNIT *uptr, int32 val, CONST void *desc)
 {
-int32 i;
+int32 i, dev_offset;
+DEVICE *dptr;
+
+if (uptr == NULL)
+    return SCPE_IERR;
+dptr = find_dev_from_unit (uptr);
+if (dptr == NULL)
+    return SCPE_IERR;
+/* Select correct devno entry for Input or Output device */
+if (dptr->name[2] == 'O')
+    dev_offset = 1;
+else
+    dev_offset = 0;
 
 fprintf(st, "devno=");
 for (i = 0; i < ttx_lines; i++) {
-    fprintf(st, "%02o%s", ttx_dsp[i*2].dev, i < ttx_lines-1 ? ", " : "");
+    fprintf(st, "%02o%s", ttx_dsp[i*2+dev_offset].dev, i < ttx_lines-1 ? 
+         "," : "");
 }
 return SCPE_OK;
 }
